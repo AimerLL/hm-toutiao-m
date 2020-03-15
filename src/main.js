@@ -5,6 +5,7 @@ import store from './store'
 import Vant from 'vant' // 引入vant组件库
 import 'vant/lib/index.css'// 引入vant组件的样式
 import 'amfe-flexible'// rem适配的
+import '@/styles/index.less' // 引入全局的自定义样式  因为要覆盖vant的样式
 
 Vue.config.productionTip = false
 

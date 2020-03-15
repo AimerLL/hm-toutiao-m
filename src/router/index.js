@@ -15,7 +15,7 @@ const login = () => import('@/views/login') // 登录页面
 const profile = () => import('@/views/user/profile') // 编辑资料
 const search = () => import('@/views/search') // 搜索中心
 const searchresult = () => import('@/views/search/result') // 搜索中心
-const acticle = () => import('@/views/acticle') // 文章详情
+const article = () => import('@/views/article') // 文章详情
 const routes = [
   {
     path: '/',
@@ -65,8 +65,8 @@ const routes = [
   },
   {
     // 一级路由 文章详情
-    path: '/search/acticle',
-    component: acticle
+    path: '/article',
+    component: article
   }
 ]
 
