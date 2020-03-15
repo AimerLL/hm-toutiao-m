@@ -3,7 +3,8 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import Vant from 'vant' // 引入vant组件库
-import 'vant/lib/index.css'
+import 'vant/lib/index.css'// 引入vant组件的样式
+import 'amfe-flexible'// rem适配的
 
 Vue.config.productionTip = false
 
