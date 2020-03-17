@@ -23,7 +23,7 @@ router.beforeEach(function (to, from, next) {
       query: {
         // fullpath后面会携带?后面的参数 是一个完整路径
         // 这里告诉登录页,登录成功后回到刚才的地址
-        redirectUrl: to.fullpath
+        redirectUrl: to.fullPath
       }
     })
   } else {

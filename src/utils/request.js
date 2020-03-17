@@ -56,11 +56,11 @@ instance.interceptors.response.use(function (response) {
   // 如果请求失败或者失效或者其他错误 会进入 到 响应拦截器的错误的区域
   // 只要是401 就是token失效 (应该用导航守卫将没有token的拦截在外面)
   /*****
-     * error
-     *    config  是出现这次错误请求的配置信息
-     *    request  请求对象
-     *    response 响应对象 status (状态码)
-     * *****/
+   * error
+   *    config  是出现这次错误请求的配置信息
+   *    request  请求对象
+   *    response 响应对象 status (状态码)
+   * *****/
   if (error.response && error.response.status === 401) {
     const path = {
       path: '/login', // 地址
@@ -116,7 +116,7 @@ instance.interceptors.response.use(function (response) {
       // router.currentRoute // 表示当前的路由信息对象 里面包含了路由的地址 和参数
       // 我们需要获取 当前路由的带参数的地址  router.currentRoute.fullPath(文档)
       store.commit('delUser') // 也要删除token  因为token失效了
-      router.push(path) // 跳回登录页
+      router.push(path)
     }
   }
   // 直接返回失败
