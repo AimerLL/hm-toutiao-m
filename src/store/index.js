@@ -18,7 +18,7 @@ export default new Vuex.Store({
   mutations: {
     // 修改state只能通过mutations
     // 修改和删除
-    updateIser (state, payload) {
+    updateUser (state, payload) {
       state.user = payload.user // 定义载荷中的user 数据给state
       // 更新的时候 把最新数据存入本地缓存
       auth.setUser(payload.user)
