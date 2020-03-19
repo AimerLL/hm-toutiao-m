@@ -1,20 +1,22 @@
 <template>
-    <!-- 文章列表组件 -->
-    <!-- 可以帮助我们实现上拉下载  需要变量 -->
-    <!-- 放div的目的是为了形成滚动条 -->
-    <!-- 后期做阅读记忆用 -->
-    <div class="scroll-wrapper">
-        <!-- 文章列表 -->
-        <!-- van-list组件 如果不加干涉, 初始化完毕 就会检测 自己距离底部的长度 -->
-        <!-- 如果超过了限定 ,就会执行 load事件  自动把绑定的 loading 变成true -->
-        <van-list finished-text='没有新的了' v-model="upLoading" :finished="finished" @load="onLoad">
-          <!-- 循环内容 -->
-          <van-cell-group>
-            <van-cell v-for="item in articles" :key="item" title="噢噢噢噢" :value="'排队'+ item"></van-cell>
-          </van-cell-group>
-        </van-list>
-    </div>
-
+  <!-- 文章列表组件 -->
+  <!-- 可以帮助我们实现上拉下载  需要变量 -->
+  <!-- 放div的目的是为了形成滚动条 -->
+  <!-- 后期做阅读记忆用 -->
+  <div class="scroll-wrapper">
+    <!-- 文章列表 -->
+    <!-- van-list组件 如果不加干涉, 初始化完毕 就会检测 自己距离底部的长度 -->
+    <!-- 如果超过了限定 ,就会执行 load事件  自动把绑定的 loading 变成true -->
+    <!-- 下拉刷新组件 -->
+    <van-pull-refresh v-model="downLoading" @refresh="onRefresh" :success-text="successText">
+      <van-list finished-text="没有新的了" v-model="upLoading" :finished="finished" @load="onLoad">
+        <!-- 循环内容 -->
+        <van-cell-group>
+          <van-cell v-for="item in articles" :key="item" title="噢噢噢噢" :value="'排队'+ item"></van-cell>
+        </van-cell-group>
+      </van-list>
+    </van-pull-refresh>
+  </div>
 </template>
 
 <script>
@@ -23,10 +25,13 @@ export default {
     return {
       upLoading: false, // 表示是否开启上拉加载 默认值false
       finished: false, // 表示是否已经完成数据的加载
-      articles: [] // 文章列表
+      articles: [], // 文章列表
+      downLoading: false, // 表示是否下拉刷新
+      successText: '' // 刷新成功的文本
     }
   },
   methods: {
+    // 上拉加载
     onLoad () {
       // 如果新的数据加载完毕 应该吧finished设置为true 表示不再请求加载
       // 可以判断总数 超过XX条就直接关闭
@@ -46,11 +51,21 @@ export default {
       // setTimeout(() => {
       //   this.finished = true // 表示 数据已经全部加载完毕 没有数据了
       // }, 1000) // 等待一秒 然后关闭加载状态
+    },
+
+    // 下拉刷新
+    onRefresh () {
+      // 下拉刷新 要获取新的数据 而且是添加在最前面
+      setTimeout(() => {
+        const arr = Array.from(Array(2), (value, index) => '新添加' + (index + 1))
+        this.articles.unshift(...arr) // 从前添加
+        this.downLoading = false // 手动关闭加载状态
+        this.successText = `更新了${arr.length}条数据`
+      }, 1000)
     }
   }
 }
 </script>
 
 <style>
-
 </style>
