@@ -12,7 +12,33 @@
       <van-list finished-text="没有新的了" v-model="upLoading" :finished="finished" @load="onLoad">
         <!-- 循环内容 -->
         <van-cell-group>
-          <van-cell v-for="item in articles" :key="item" title="噢噢噢噢" :value="'排队'+ item"></van-cell>
+          <van-cell v-for="item in articles" :key="item">
+            <!-- 放置元素 文章列表的循环项 无图 单图 三图 -->
+            <!-- 三图 -->
+            <div class="article_item">
+              <!-- 标题 -->
+              <h3 class="van-ellipsis">三图</h3>
+              <!-- 三图图片 -->
+              <div class="img_box">
+                <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+                <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+                <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+              </div>
+              <!-- 单图 -->
+               <!-- <div class="img_box">
+                <van-image class="w100" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+              </div> -->
+              <!-- 作者信息 -->
+              <div class="info_box">
+                <span>你像一阵风</span>
+                <span>8评论</span>
+                <span>10分钟前</span>
+                <span class="close">
+                  <van-icon name="cross"></van-icon>
+                </span>
+              </div>
+            </div>
+          </van-cell>
         </van-cell-group>
       </van-list>
     </van-pull-refresh>
@@ -57,7 +83,10 @@ export default {
     onRefresh () {
       // 下拉刷新 要获取新的数据 而且是添加在最前面
       setTimeout(() => {
-        const arr = Array.from(Array(2), (value, index) => '新添加' + (index + 1))
+        const arr = Array.from(
+          Array(2),
+          (value, index) => '新添加' + (index + 1)
+        )
         this.articles.unshift(...arr) // 从前添加
         this.downLoading = false // 手动关闭加载状态
         this.successText = `更新了${arr.length}条数据`
@@ -67,5 +96,45 @@ export default {
 }
 </script>
 
-<style>
+<style lang='less' scoped>
+.article_item {
+  h3 {
+    font-weight: normal;
+    line-height: 2;
+  }
+  .img_box {
+    display: flex;
+    justify-content: space-between;
+    .w33 {
+      width: 33%;
+      height: 90px;
+    }
+    .w100 {
+      width: 100%;
+      height: 180px;
+    }
+  }
+  .info_box {
+    color: #999;
+    line-height: 2;
+    position: relative;
+    font-size: 12px;
+    span {
+      padding-right: 10px;
+      &.close {
+        border: 1px solid #ddd;
+        border-radius: 2px;
+        line-height: 15px;
+        height: 12px;
+        width: 16px;
+        text-align: center;
+        padding-right: 0;
+        font-size: 8px;
+        position: absolute;
+        right: 0;
+        top: 7px;
+      }
+    }
+  }
+}
 </style>
