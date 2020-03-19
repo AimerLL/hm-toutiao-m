@@ -47,13 +47,22 @@
 
 <script>
 export default {
+  props: {
+    // key(props属性名) value{对象 配置}
+    channel_id: {
+      required: true, // 必填项 此属性的含义 true 要求该 props必须传
+      type: Number, // 表示要传入的prop属性的类型
+      default: null // 默认值的意思 假如你没有传入 prop属性 默认值 就会被采用
+    }
+  },
   data () {
     return {
       upLoading: false, // 表示是否开启上拉加载 默认值false
       finished: false, // 表示是否已经完成数据的加载
       articles: [], // 文章列表
       downLoading: false, // 表示是否下拉刷新
-      successText: '' // 刷新成功的文本
+      successText: '', // 刷新成功的文本
+      timestamp: null // 定义一个时间戳对象 存历史的时间戳
     }
   },
   methods: {

@@ -11,7 +11,9 @@
           </van-cell-group>
         </div>-->
         <!-- 有多少个tab 就有多少个 article-list  相当于多个article-list实例-->
-        <ArticleList></ArticleList>
+
+        <!-- 将频道id传给每个列表组件 用父传子 -->
+        <ArticleList :channel_id="item.id"></ArticleList>
       </van-tab>
     </van-tabs>
     <!-- 在tabs下放置图标 编辑频道的图标 -->
