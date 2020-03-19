@@ -12,27 +12,27 @@
       <van-list finished-text="没有新的了" v-model="upLoading" :finished="finished" @load="onLoad">
         <!-- 循环内容 -->
         <van-cell-group>
-          <van-cell v-for="item in articles" :key="item.art_id">
+          <van-cell v-for="item in articles" :key="item.art_id.toString()">
             <!-- 放置元素 文章列表的循环项 无图 单图 三图 -->
             <!-- 三图 -->
             <div class="article_item">
               <!-- 标题 -->
-              <h3 class="van-ellipsis">三图</h3>
+              <h3 class="van-ellipsis">{{ item.title }}</h3>
               <!-- 三图图片 -->
-              <div class="img_box">
-                <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
-                <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
-                <van-image class="w33" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
+              <div class="img_box" v-if="item.cover.type === 3">
+                <van-image class="w33" fit="cover" :src="item.cover.images[0]" />
+                <van-image class="w33" fit="cover" :src="item.cover.images[1]" />
+                <van-image class="w33" fit="cover" :src="item.cover.images[2]" />
               </div>
               <!-- 单图 -->
-               <!-- <div class="img_box">
-                <van-image class="w100" fit="cover" src="https://img.yzcdn.cn/vant/cat.jpeg" />
-              </div> -->
+               <div class="img_box" v-if="item.cover.type === 1">
+                <van-image class="w100" fit="cover" :src="item.cover.images[0]" />
+              </div>
               <!-- 作者信息 -->
               <div class="info_box">
-                <span>你像一阵风</span>
-                <span>8评论</span>
-                <span>10分钟前</span>
+                <span>{{ item.aut_name }}</span>
+                <span>{{ item.comm_count }}</span>
+                <span>{{ item.pubdate }}</span>
                 <span class="close">
                   <van-icon name="cross"></van-icon>
                 </span>
@@ -91,7 +91,7 @@ export default {
       // 获取数据
       const data = await getArticles({ channel_id: this.channel_id, timestamp: this.timestamp || Date.now() })
       // 数据放到队尾
-      this.articles.push(data.results)
+      this.articles.push(...data.results)
       // 关闭加载状态
       this.upLoading = false
       // 将历史时间戳 给timestamp  但是 赋值之前有个判断 需要判断一个历史时间是否为0
