@@ -3,20 +3,20 @@
     <!-- 放置tabs组件 -->
     <van-tabs>
       <!-- 放置子标签 -->
-      <van-tab :title="`标签${item}`" v-for="item in 10" :key="item">
+      <van-tab :title="item.name" v-for="item in channels" :key="item.id">
         <!-- 生成若干个单元格 -->
         <!-- <div class="scroll-wrapper">
           <van-cell-group>
             <van-cell v-for="item in 20" :key="item" title="标题" value="内容"></van-cell>
           </van-cell-group>
-        </div> -->
+        </div>-->
         <!-- 有多少个tab 就有多少个 article-list  相当于多个article-list实例-->
         <ArticleList></ArticleList>
       </van-tab>
     </van-tabs>
     <!-- 在tabs下放置图标 编辑频道的图标 -->
     <span class="bar_btn">
-      <van-icon name='wap-nav'></van-icon>
+      <van-icon name="wap-nav"></van-icon>
     </span>
   </div>
 </template>
@@ -24,10 +24,25 @@
 <script>
 // @ is an alias to /src
 import ArticleList from './compoents/article-list'
+import { getMyChannels } from '@/api/channels'
 export default {
   name: 'Home',
   components: {
     ArticleList
+  },
+  data () {
+    return {
+      channels: [] // 接收频道数据
+    }
+  },
+  methods: {
+    async getMyChannels () {
+      const data = await getMyChannels() // 接收返回的数据
+      this.channels = data.channels // 将返回的数据赋值给data中的数据
+    }
+  },
+  created () {
+    this.getMyChannels()
   }
 }
 </script>
