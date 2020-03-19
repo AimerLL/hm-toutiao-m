@@ -87,6 +87,8 @@ export default {
       //   this.finished = true // 表示 数据已经全部加载完毕 没有数据了
       // }, 1000) // 等待一秒 然后关闭加载状态
 
+      // 人为的控制 请求加载的时间
+      await this.$sleep()
       // 如果有历史时间戳 就把历史的传入 如果没有就把现在的传入
       // 获取数据
       const data = await getArticles({ channel_id: this.channel_id, timestamp: this.timestamp || Date.now() })
@@ -118,6 +120,7 @@ export default {
       //   this.successText = `更新了${arr.length}条数据`
       // }, 1000)
 
+      await this.$sleep()
       // 下拉刷新应该发送最新的时间戳
       const data = await getArticles({
         channel_id: this.channel_id,
