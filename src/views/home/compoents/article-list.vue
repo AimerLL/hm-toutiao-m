@@ -12,7 +12,7 @@
       <van-list finished-text="没有新的了" v-model="upLoading" :finished="finished" @load="onLoad">
         <!-- 循环内容 -->
         <van-cell-group>
-          <van-cell v-for="item in articles" :key="item">
+          <van-cell v-for="item in articles" :key="item.art_id">
             <!-- 放置元素 文章列表的循环项 无图 单图 三图 -->
             <!-- 三图 -->
             <div class="article_item">
@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import { getArticles } from '@/api/articles' // 引入获取文章模块
 export default {
   props: {
     // key(props属性名) value{对象 配置}
@@ -67,25 +68,41 @@ export default {
   },
   methods: {
     // 上拉加载
-    onLoad () {
+    async onLoad () {
       // 如果新的数据加载完毕 应该吧finished设置为true 表示不再请求加载
       // 可以判断总数 超过XX条就直接关闭
-      if (this.articles.length > 50) {
-        this.finished = true // 关闭加载
-      } else {
-        const arr = Array.from(Array(15), (value, index) => index + 1)
-        // 要注意 上拉加载不是覆盖数据 是追加新数据到队列尾部
-        this.articles.push(...arr)
-        // 添加完数据 手动关闭loading
-        this.upLoading = false
-      }
-
+      // if (this.articles.length > 50) {
+      //   this.finished = true // 关闭加载
+      // } else {
+      //   const arr = Array.from(Array(15), (value, index) => index + 1)
+      //   // 要注意 上拉加载不是覆盖数据 是追加新数据到队列尾部
+      //   this.articles.push(...arr)
+      //   // 添加完数据 手动关闭loading
+      //   this.upLoading = false
+      // }
       // 下面这么写 依然不能关掉加载状态 为什么 ? 因为关掉之后  检测机制  高度还是不够 还是会开启
       // 如果你有数据 你应该 把数据到加到list中
       // 如果想关掉
       // setTimeout(() => {
       //   this.finished = true // 表示 数据已经全部加载完毕 没有数据了
       // }, 1000) // 等待一秒 然后关闭加载状态
+
+      // 如果有历史时间戳 就把历史的传入 如果没有就把现在的传入
+      // 获取数据
+      const data = await getArticles({ channel_id: this.channel_id, timestamp: this.timestamp || Date.now() })
+      // 数据放到队尾
+      this.articles.push(data.results)
+      // 关闭加载状态
+      this.upLoading = false
+      // 将历史时间戳 给timestamp  但是 赋值之前有个判断 需要判断一个历史时间是否为0
+      // 如果历史时间戳为 0 说明 此时已经没有数据了 应该宣布 结束   finished true
+      if (data.pre_timestamp) {
+        // 如果有历史时间戳 说明还可以继续加载
+        this.timestamp = data.pre_timestamp
+      } else {
+        // 如果没有历史时间戳 说明没有数据了 停止获取
+        this.finished = true
+      }
     },
 
     // 下拉刷新
