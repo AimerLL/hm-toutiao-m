@@ -8,7 +8,9 @@
         <!-- <div class="scroll-wrapper">
           <van-cell-group>
             <van-cell v-for="item in 20" :key="item" title="标题" value="内容"></van-cell>
-          </van-cell-group> -->
+          </van-cell-group>
+        </div> -->
+        <!-- 有多少个tab 就有多少个 article-list  相当于多个article-list实例-->
         <ArticleList></ArticleList>
       </van-tab>
     </van-tabs>
