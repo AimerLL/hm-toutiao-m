@@ -106,17 +106,41 @@ export default {
     },
 
     // 下拉刷新
-    onRefresh () {
+    async onRefresh () {
       // 下拉刷新 要获取新的数据 而且是添加在最前面
-      setTimeout(() => {
-        const arr = Array.from(
-          Array(2),
-          (value, index) => '新添加' + (index + 1)
-        )
-        this.articles.unshift(...arr) // 从前添加
-        this.downLoading = false // 手动关闭加载状态
-        this.successText = `更新了${arr.length}条数据`
-      }, 1000)
+      // setTimeout(() => {
+      //   const arr = Array.from(
+      //     Array(2),
+      //     (value, index) => '新添加' + (index + 1)
+      //   )
+      //   this.articles.unshift(...arr) // 从前添加
+      //   this.downLoading = false // 手动关闭加载状态
+      //   this.successText = `更新了${arr.length}条数据`
+      // }, 1000)
+
+      // 下拉刷新应该发送最新的时间戳
+      const data = await getArticles({
+        channel_id: this.channel_id,
+        timestamp: Date.now() // 要实现的是刷新后全部替换为新的数据 这里永远传最新的时间戳
+      })
+      this.downLoading = false // 关闭下拉刷新的状态
+      // 需要判断 最新的时间戳能否获取数据
+      // 如果能把新数据整个替换旧数据 如果不能 就告诉大家 暂时没有更新
+      if (data.results.length) {
+        // 如果有返回数据
+        // 需要将整个的articles替换
+        this.articles = data.results // 历史数据全部被覆盖
+        // 此时你 已经之前的全部数据覆盖了 假如 你之前把数据拉到了低端 也就意味着 你之前的finished已经为true了
+        if (data.pre_timestamp) {
+          // 因为下拉刷新 换来了一拨新的数据 里面 又有历史时间戳
+          this.finished = false // 重新唤醒列表 让列表可以继续上拉加载
+          this.timestamp = data.pre_timestamp // 记录历史时间戳给变量
+        }
+        this.successText = `更新了${data.results.length}条数据`
+      } else {
+        // 如果换不来新数据
+        this.successText = '当前已经是最新了'
+      }
     }
   }
 }
