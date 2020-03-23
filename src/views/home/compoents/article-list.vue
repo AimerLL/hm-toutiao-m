@@ -52,7 +52,31 @@
 <script>
 import { mapState } from 'vuex'
 import { getArticles } from '@/api/articles' // 引入获取文章模块
+import eventBus from '@/utils/eventbus'
 export default {
+  // 初始化函数
+  created () {
+    // 监听删除文章事件
+    // 接收一个文章id 一个频道id
+    eventBus.$on('delArticle', (artId, channelId) => {
+      // 有多少组件,这个函数就会触发多少次
+      // 要判断传过来的频道是否和自身的频道一样
+      if (channelId === this.channel_id) {
+        // 如果一样 说明当前这个article-list实例就是要删除的数据
+        // findIndex() 方法可以查询对应数据所在的下标 这里定义一个index来接受查到的下标
+        const index = this.articles.findIndex(item => item.art_id.toString() === artId)
+        if (index > -1) {
+          // 下标从0开始 所以应该大于-1
+          this.articles.splice(index, 1) // 删除对应下标的数据
+        }
+        // 如果一直删除 将列表数据都删光 不会触发load事件
+        // 判断如果数据被删光, 手动触发加载事件添加数据
+        if (this.articles.length === 0) {
+          this.onLoad()
+        }
+      }
+    })
+  },
   computed: {
     ...mapState(['user'])
   },

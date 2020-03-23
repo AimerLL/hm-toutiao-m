@@ -1,7 +1,8 @@
 <template>
   <div class="container">
     <!-- 放置tabs组件 -->
-    <van-tabs>
+    <!-- 默认绑定激活页签 -->
+    <van-tabs v-model="activeIndex">
       <!-- 放置子标签 -->
       <van-tab :title="item.name" v-for="item in channels" :key="item.id">
         <!-- 生成若干个单元格 -->
@@ -23,7 +24,7 @@
     </span>
     <!-- 弹层 -->
     <van-popup :style="{ width: '80%' }" v-model="showMoreAction">
-      <MoreAction></MoreAction>
+      <MoreAction @dislike="dislikeArticle"></MoreAction>
     </van-popup>
   </div>
 </template>
@@ -33,6 +34,8 @@
 import ArticleList from './compoents/article-list'
 import MoreAction from './compoents/moreAction'
 import { getMyChannels } from '@/api/channels'
+import { dislikeArticle } from '@/api/articles' // 不感兴趣
+import eventbus from '@/utils/eventbus' // 公共事件处理器 (事件广播)
 export default {
   name: 'Home',
   components: {
@@ -42,7 +45,8 @@ export default {
     return {
       channels: [], // 接收频道数据
       showMoreAction: false, // 是否显示弹层
-      articleID: null // 用来接收点击叉号时所在的文章id
+      articleID: null, // 用来接收点击叉号时所在的文章id
+      activeIndex: 0 // 当前默认激活的页签是0
     }
   },
   methods: {
@@ -56,6 +60,29 @@ export default {
       this.showMoreAction = true
       // 把接收到的文章id存起来 等点击不喜欢或举报的时候在调用接口进行操作
       this.articleID = artID
+    },
+    // 对文章不感兴趣
+    async dislikeArticle () {
+      // 调用接口
+      try {
+        await dislikeArticle({
+          target: this.articleID
+        })
+        this.$lnotify({
+          type: 'success',
+          message: '操作成功'
+        })
+        // 触发一个事件 利用事件广播的机制来 通知对应的tab 删除对应的数据
+        // 除了 传一个文章之外 你还需要告诉 监听事件的人 现在处于哪个频道 可以传递频道id
+        // this.channels[this.activeIndex].id 当前激活的频道数据的id
+        eventbus.$emit('delArticle', this.articleID, this.channels[this.activeIndex].id)
+        // 所有操作完成后,关闭弹层
+        this.showMoreAction = false
+      } catch (error) {
+        this.$lnotify({
+          message: '操作失败'
+        })
+      }
     }
   },
   created () {

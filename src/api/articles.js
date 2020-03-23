@@ -4,9 +4,19 @@
  * ***********/
 import request from '@/utils/request'
 
+// 获取文章推荐数据
 export function getArticles (params) {
   return request({
     url: 'http://ttapi.research.itcast.cn/app/v1_1/articles',
     params: { with_top: 1, ...params }
+  })
+}
+
+// 不感兴趣的文章接口
+export function dislikeArticle (data) {
+  return request({
+    url: '/article/dislikes',
+    method: 'post', // 请求类型
+    data
   })
 }
