@@ -13,34 +13,46 @@
         <!-- 有多少个tab 就有多少个 article-list  相当于多个article-list实例-->
 
         <!-- 将频道id传给每个列表组件 用父传子 -->
-        <ArticleList :channel_id="item.id"></ArticleList>
+        <!-- 监听article-list组件中触发的showAction事件 -->
+        <ArticleList @showAction="openAction" :channel_id="item.id"></ArticleList>
       </van-tab>
     </van-tabs>
     <!-- 在tabs下放置图标 编辑频道的图标 -->
     <span class="bar_btn">
       <van-icon name="wap-nav"></van-icon>
     </span>
+    <!-- 弹层 -->
+    <van-popup :style="{ width: '80%' }" v-model="showMoreAction">
+      <MoreAction></MoreAction>
+    </van-popup>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import ArticleList from './compoents/article-list'
+import MoreAction from './compoents/moreAction'
 import { getMyChannels } from '@/api/channels'
 export default {
   name: 'Home',
   components: {
-    ArticleList
+    ArticleList, MoreAction
   },
   data () {
     return {
-      channels: [] // 接收频道数据
+      channels: [], // 接收频道数据
+      showMoreAction: false // 是否显示弹层
     }
   },
   methods: {
     async getMyChannels () {
       const data = await getMyChannels() // 接收返回的数据
       this.channels = data.channels // 将返回的数据赋值给data中的数据
+    },
+    // 在article-list组件触发showAction的时候 触发这个事件
+    openAction () {
+      // 触发事件时 弹出弹层组件
+      this.showMoreAction = true
     }
   },
   created () {

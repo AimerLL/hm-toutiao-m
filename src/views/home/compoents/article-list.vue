@@ -20,9 +20,10 @@
               <h3 class="van-ellipsis">{{ item.title }}</h3>
               <!-- 三图图片 -->
               <div class="img_box" v-if="item.cover.type === 3">
-                <van-image class="w33" fit="cover" :src="item.cover.images[0]" />
-                <van-image class="w33" fit="cover" :src="item.cover.images[1]" />
-                <van-image class="w33" fit="cover" :src="item.cover.images[2]" />
+                 <!-- lazy-load 进行懒加载 只有屏幕中出现才会加载 -->
+                <van-image lazy-load class="w33" fit="cover" :src="item.cover.images[0]" />
+                <van-image lazy-load class="w33" fit="cover" :src="item.cover.images[1]" />
+                <van-image lazy-load class="w33" fit="cover" :src="item.cover.images[2]" />
               </div>
               <!-- 单图 -->
                <div class="img_box" v-if="item.cover.type === 1">
@@ -32,8 +33,10 @@
               <div class="info_box">
                 <span>{{ item.aut_name }}</span>
                 <span>{{ item.comm_count }}</span>
-                <span>{{ item.pubdate }}</span>
-                <span class="close">
+                <span>{{ item.pubdate | relTime }}</span>
+                <!-- 叉号图表应该在登录时显示,不登录不显示 -->
+                <!-- @事件除了绑定方法,还可以直接写逻辑 -->
+                <span @click="$emit('showAction')" class="close" v-if="user.token">
                   <van-icon name="cross"></van-icon>
                 </span>
               </div>
@@ -46,8 +49,12 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import { getArticles } from '@/api/articles' // 引入获取文章模块
 export default {
+  computed: {
+    ...mapState(['user'])
+  },
   props: {
     // key(props属性名) value{对象 配置}
     channel_id: {
