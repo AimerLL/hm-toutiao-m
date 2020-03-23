@@ -36,7 +36,8 @@
                 <span>{{ item.pubdate | relTime }}</span>
                 <!-- 叉号图表应该在登录时显示,不登录不显示 -->
                 <!-- @事件除了绑定方法,还可以直接写逻辑 -->
-                <span @click="$emit('showAction')" class="close" v-if="user.token">
+                <!-- 触发时传出所点击叉号所在的文章的id -->
+                <span @click="$emit('showAction', item.art_id.toString())" class="close" v-if="user.token">
                   <van-icon name="cross"></van-icon>
                 </span>
               </div>

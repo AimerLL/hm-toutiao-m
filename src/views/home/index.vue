@@ -41,7 +41,8 @@ export default {
   data () {
     return {
       channels: [], // 接收频道数据
-      showMoreAction: false // 是否显示弹层
+      showMoreAction: false, // 是否显示弹层
+      articleID: null // 用来接收点击叉号时所在的文章id
     }
   },
   methods: {
@@ -50,9 +51,11 @@ export default {
       this.channels = data.channels // 将返回的数据赋值给data中的数据
     },
     // 在article-list组件触发showAction的时候 触发这个事件
-    openAction () {
+    openAction (artID) {
       // 触发事件时 弹出弹层组件
       this.showMoreAction = true
+      // 把接收到的文章id存起来 等点击不喜欢或举报的时候在调用接口进行操作
+      this.articleID = artID
     }
   },
   created () {
