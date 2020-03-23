@@ -24,7 +24,7 @@
     </span>
     <!-- 弹层 -->
     <van-popup :style="{ width: '80%' }" v-model="showMoreAction">
-      <MoreAction @dislike="dislikeArticle"></MoreAction>
+      <MoreAction @dislike="dislikeOrReport('dislike')" @report="dislikeOrReport('report', $event)"></MoreAction>
     </van-popup>
   </div>
 </template>
@@ -34,7 +34,7 @@
 import ArticleList from './compoents/article-list'
 import MoreAction from './compoents/moreAction'
 import { getMyChannels } from '@/api/channels'
-import { dislikeArticle } from '@/api/articles' // 不感兴趣
+import { dislikeArticle, reportArticle } from '@/api/articles' // 不感兴趣和举报
 import eventbus from '@/utils/eventbus' // 公共事件处理器 (事件广播)
 export default {
   name: 'Home',
@@ -61,13 +61,13 @@ export default {
       // 把接收到的文章id存起来 等点击不喜欢或举报的时候在调用接口进行操作
       this.articleID = artID
     },
-    // 对文章不感兴趣
-    async dislikeArticle () {
+
+    // 对文章不感兴趣和举报
+    async dislikeOrReport (operateType, type) {
       // 调用接口
       try {
-        await dislikeArticle({
-          target: this.articleID
-        })
+        // 根据参数判断是举报 还是不喜欢
+        operateType === 'dislike' ? await dislikeArticle({ target: this.articleID }) : await reportArticle({ target: this.articleID, type })
         this.$lnotify({
           type: 'success',
           message: '操作成功'
@@ -85,6 +85,28 @@ export default {
       }
     }
   },
+  // 举报文章
+  //   async reportArticle (type) {
+  //     // 调用举报接口
+  //     try {
+  //       await reportArticle({
+  //         target: this.articleID,
+  //         type
+  //       })
+  //       this.$lnotify({
+  //         type: 'success',
+  //         message: '操作成功'
+  //       })
+  //       // 也要删除举报的文章 然后关闭弹层 和不感兴趣一样
+  //       eventbus.$emit('delArticle', this.articleID, this.channels[this.activeIndex].id)
+  //       this.showMoreAction = false
+  //     } catch (error) {
+  //       this.$lnotify({
+  //         message: '操作失败'
+  //       })
+  //     }
+  //   }
+  // },
   created () {
     this.getMyChannels()
   }
